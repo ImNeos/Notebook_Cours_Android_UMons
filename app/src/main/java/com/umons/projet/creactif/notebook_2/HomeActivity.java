@@ -1,0 +1,80 @@
+package com.umons.projet.creactif.notebook_2;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+import android.widget.Toast;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.yarolegovich.lovelydialog.LovelyTextInputDialog;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class HomeActivity extends AppCompatActivity {
+
+    List<String> list_of_items = new ArrayList<>();
+    ListView listView;
+    FloatingActionButton fab_add;
+    ArrayAdapter arrayAdapter;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_home);
+        InitializeFields();
+
+        fab_add.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                DiffuserMessage("Working !");
+                OpenDialog();
+            }
+        });
+
+    }
+    private void OpenDialog()
+    {
+        new LovelyTextInputDialog(this)
+                .setTopColorRes(R.color.colorPrimary)
+                .setTitle("Ajouter un élément à la liste")
+                .setMessage("Entrer votre élément")
+                .setIcon(R.drawable.ic_input_add)
+                .setInputFilter("Erreur", new LovelyTextInputDialog.TextFilter() {
+                    @Override
+                    public boolean check(String text) {
+                        return text.length() > 3 && text.length() < 15;
+                    }
+                })
+                .setConfirmButton(android.R.string.ok, new LovelyTextInputDialog.OnTextInputConfirmListener() {
+                    @Override
+                    public void onTextInputConfirmed(String text) {
+                        list_of_items.add(text);
+                        arrayAdapter.notifyDataSetChanged();
+                        DiffuserMessage(text);
+                    }
+                })
+                .show();
+    }
+
+    private void InitializeFields()
+    {
+        listView = (ListView) findViewById(R.id.list_view);
+        fab_add = (FloatingActionButton) findViewById(R.id.fab_add);
+
+
+        arrayAdapter = new ArrayAdapter(this,android.R.layout.simple_list_item_1,  list_of_items);
+        listView.setAdapter(arrayAdapter);
+
+
+    }
+    private void DiffuserMessage(String message)
+    {
+        Toast.makeText(HomeActivity.this, message, Toast.LENGTH_SHORT).show();
+    }
+
+
+}
