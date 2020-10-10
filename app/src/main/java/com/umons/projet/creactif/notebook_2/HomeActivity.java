@@ -5,11 +5,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.umons.projet.creactif.note.WriteSimpleNoteActivity;
 import com.yarolegovich.lovelydialog.LovelyTextInputDialog;
 
 import java.util.ArrayList;
@@ -30,12 +32,30 @@ public class HomeActivity extends AppCompatActivity {
         fab_add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                DiffuserMessage("Working !");
+                //DiffuserMessage("Working !");
                 OpenDialog();
             }
         });
 
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                SendUserToNoteActivity(i);
+            }
+        });
+
     }
+
+    private void SendUserToNoteActivity(int i)
+    {
+       // Toast.makeText(this, Integer.toString(i), Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(HomeActivity.this, WriteSimpleNoteActivity.class);
+        intent.putExtra("Titre", list_of_items.get(i));
+        startActivity(intent);
+    }
+
+
     private void OpenDialog()
     {
         new LovelyTextInputDialog(this)
@@ -46,7 +66,7 @@ public class HomeActivity extends AppCompatActivity {
                 .setInputFilter("Erreur", new LovelyTextInputDialog.TextFilter() {
                     @Override
                     public boolean check(String text) {
-                        return text.length() > 3 && text.length() < 15;
+                        return text.length() > 3 && text.length() < 30;
                     }
                 })
                 .setConfirmButton(android.R.string.ok, new LovelyTextInputDialog.OnTextInputConfirmListener() {
