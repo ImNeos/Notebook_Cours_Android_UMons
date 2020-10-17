@@ -11,6 +11,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.umons.projet.creactif.database_int.DB_Notes;
 import com.umons.projet.creactif.note.WriteSimpleNoteActivity;
 import com.yarolegovich.lovelydialog.LovelyTextInputDialog;
 
@@ -72,6 +73,7 @@ public class HomeActivity extends AppCompatActivity {
                 .setConfirmButton(android.R.string.ok, new LovelyTextInputDialog.OnTextInputConfirmListener() {
                     @Override
                     public void onTextInputConfirmed(String text) {
+                        addItemToDB(text);
                         list_of_items.add(text);
                         arrayAdapter.notifyDataSetChanged();
                         DiffuserMessage(text);
@@ -80,17 +82,29 @@ public class HomeActivity extends AppCompatActivity {
                 .show();
     }
 
+    private void addItemToDB(String text)
+    {
+        DB_Notes.getInstance(this).addElementTodB(text);
+    }
+
     private void InitializeFields()
     {
         listView = (ListView) findViewById(R.id.list_view);
         fab_add = (FloatingActionButton) findViewById(R.id.fab_add);
 
 
+        FillInList();
         arrayAdapter = new ArrayAdapter(this,android.R.layout.simple_list_item_1,  list_of_items);
         listView.setAdapter(arrayAdapter);
 
 
     }
+
+    private void FillInList()
+    {
+        DB_Notes.getInstance(this).fillInlist(list_of_items);
+    }
+
     private void DiffuserMessage(String message)
     {
         Toast.makeText(HomeActivity.this, message, Toast.LENGTH_SHORT).show();
