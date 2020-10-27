@@ -58,7 +58,6 @@ public final class DB_Notes {
 
 
 
-
     /* Inner class that defines the table contents */
     public static class FeedEntry implements BaseColumns {
         public static final String TABLE_NAME = "notes";
