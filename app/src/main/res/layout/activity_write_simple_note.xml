@@ -24,6 +24,7 @@
 
 
         <EditText
+            android:id="@+id/et_notes"
             android:layout_width="match_parent"
             android:padding="15dp"
             android:hint="Ecrivez quelque chose..."
