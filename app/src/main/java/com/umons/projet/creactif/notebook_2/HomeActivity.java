@@ -2,6 +2,7 @@ package com.umons.projet.creactif.notebook_2;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.solver.widgets.Helper;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -9,20 +10,28 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.umons.projet.creactif.Util.HelperClass;
 import com.umons.projet.creactif.database_int.DB_Notes;
+import com.umons.projet.creactif.model.NoteListObject;
 import com.umons.projet.creactif.note.WriteSimpleNoteActivity;
 import com.yarolegovich.lovelydialog.LovelyTextInputDialog;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class HomeActivity extends AppCompatActivity {
 
@@ -30,6 +39,8 @@ public class HomeActivity extends AppCompatActivity {
     FloatingActionButton fab_add;
     NoteListAdapter noteListAdapter;
     RecyclerView recyclerView;
+
+    List<NoteListObject> listObjects = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,10 +56,6 @@ public class HomeActivity extends AppCompatActivity {
         });
 
 
-        //TODO 1 : Create a new package called "Model"
-        //TODO 2 : Create a class called "NoteListClass" -> In this class we will represent an object NoteList, so we need to declare some variable (Name, type,...)
-        //TODO 3 : Create getters and setters + Constructor
-        //TODO 4 : Create a layout model for the recyclerview
 
     }
 
@@ -79,11 +86,7 @@ public class HomeActivity extends AppCompatActivity {
                     public void onTextInputConfirmed(String text) {
                         if (!DB_Notes.getInstance(HomeActivity.this).checkAlreadyExist(text))
                         {
-                            //TODO 5 : Create a list of object and att it to this list
-
                             //TODO 7 Rewrite this function the right way : FillInList(); addItemToDB(text);
-
-
 
                             noteListAdapter.notifyDataSetChanged();
 
@@ -108,13 +111,17 @@ public class HomeActivity extends AppCompatActivity {
 
         //TODO 6 Rewrite this function the right way : FillInList();
 
+        for (int i =0; i<15; i++)
+        {
+            listObjects.add(new NoteListObject("Note"+i, i + "/11/2020", 0));
+        }
+
 
         recyclerView = (RecyclerView) findViewById(R.id.recycle_view);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.HORIZONTAL));
-
         recyclerView.setLayoutManager(layoutManager);
-        noteListAdapter = new NoteListAdapter(this);
+        noteListAdapter = new NoteListAdapter(this, listObjects);
         recyclerView.setAdapter(noteListAdapter);
     }
 
@@ -133,29 +140,68 @@ public class HomeActivity extends AppCompatActivity {
 class NoteListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 {
 
-
-    public NoteListAdapter (Context context)
+    Context context;
+    List<NoteListObject> listObjects = new ArrayList<>();
+    public NoteListAdapter (Context context, List<NoteListObject> listObjects)
     {
-        //TODO In the constructor, pass the list of object and use it
+        this.listObjects = listObjects;
+        this.context = context;
     }
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType)
     {
-        //TODO We will do this together
-        return null;
+        View view = LayoutInflater.from(context).inflate(R.layout.model_notelist, parent, false);
+        return new ItemMessageSentHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position)
     {
-        //TODO We will do this together
+        final String name= listObjects.get(position).getName();
+        final String date = listObjects.get(position).getDate();
+        if (!TextUtils.isEmpty(name))
+        {
+            ((ItemMessageSentHolder)holder).lbl_name.setText(name);
+            int color = HelperClass.ChooseColor(name);
+            ((ItemMessageSentHolder)holder).im_color.setImageResource(color);
+            HelperClass.ChooseColor(name);
+        }
+        if (!TextUtils.isEmpty(date))
+        {
+
+            ((ItemMessageSentHolder) holder).lbl_date.setText(date);
+        }
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.i("ClickHolder", name);
+                Intent intent = new Intent(context, WriteSimpleNoteActivity.class);
+                intent.putExtra("Titre", name);
+                context.startActivity(intent);
+            }
+        });
+
     }
 
     @Override
     public int getItemCount()
     {
-        //TODO We will do this together
-        return 0;
+        return listObjects.size();
+    }
+    class ItemMessageSentHolder extends RecyclerView.ViewHolder {
+
+        public TextView lbl_name, lbl_date;
+        public CircleImageView im_color;
+
+
+        public ItemMessageSentHolder(View itemView) {
+            super(itemView);
+
+            lbl_name = itemView.findViewById(R.id.txt_name);
+            lbl_date = itemView.findViewById(R.id.txt_date);
+            im_color = itemView.findViewById(R.id.im_note);
+        }
     }
 }
