@@ -1,10 +1,16 @@
 package com.umons.projet.creactif.notebook_2;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -21,9 +27,9 @@ import java.util.List;
 public class HomeActivity extends AppCompatActivity {
 
     List<String> list_of_items = new ArrayList<>();
-    ListView listView;
     FloatingActionButton fab_add;
-    ArrayAdapter arrayAdapter;
+    NoteListAdapter noteListAdapter;
+    RecyclerView recyclerView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,12 +45,10 @@ public class HomeActivity extends AppCompatActivity {
         });
 
 
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                SendUserToNoteActivity(i);
-            }
-        });
+        //TODO 1 : Create a new package called "Model"
+        //TODO 2 : Create a class called "NoteListClass" -> In this class we will represent an object NoteList, so we need to declare some variable (Name, type,...)
+        //TODO 3 : Create getters and setters + Constructor
+        //TODO 4 : Create a layout model for the recyclerview
 
     }
 
@@ -73,10 +77,21 @@ public class HomeActivity extends AppCompatActivity {
                 .setConfirmButton(android.R.string.ok, new LovelyTextInputDialog.OnTextInputConfirmListener() {
                     @Override
                     public void onTextInputConfirmed(String text) {
-                        addItemToDB(text);
-                        list_of_items.add(text);
-                        arrayAdapter.notifyDataSetChanged();
-                        DiffuserMessage(text);
+                        if (!DB_Notes.getInstance(HomeActivity.this).checkAlreadyExist(text))
+                        {
+                            //TODO 5 : Create a list of object and att it to this list
+
+                            //TODO 7 Rewrite this function the right way : FillInList(); addItemToDB(text);
+
+
+
+                            noteListAdapter.notifyDataSetChanged();
+
+                            DiffuserMessage(text);
+                        }else
+                            {
+                            Toast.makeText(HomeActivity.this, "Ce nom existe déjà ! ", Toast.LENGTH_SHORT).show();
+                        }
                     }
                 })
                 .show();
@@ -89,15 +104,18 @@ public class HomeActivity extends AppCompatActivity {
 
     private void InitializeFields()
     {
-        listView = (ListView) findViewById(R.id.list_view);
         fab_add = (FloatingActionButton) findViewById(R.id.fab_add);
 
-
-        FillInList();
-        arrayAdapter = new ArrayAdapter(this,android.R.layout.simple_list_item_1,  list_of_items);
-        listView.setAdapter(arrayAdapter);
+        //TODO 6 Rewrite this function the right way : FillInList();
 
 
+        recyclerView = (RecyclerView) findViewById(R.id.recycle_view);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        recyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.HORIZONTAL));
+
+        recyclerView.setLayoutManager(layoutManager);
+        noteListAdapter = new NoteListAdapter(this);
+        recyclerView.setAdapter(noteListAdapter);
     }
 
     private void FillInList()
@@ -111,4 +129,33 @@ public class HomeActivity extends AppCompatActivity {
     }
 
 
+}
+class NoteListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
+{
+
+
+    public NoteListAdapter (Context context)
+    {
+        //TODO In the constructor, pass the list of object and use it
+    }
+    @NonNull
+    @Override
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType)
+    {
+        //TODO We will do this together
+        return null;
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position)
+    {
+        //TODO We will do this together
+    }
+
+    @Override
+    public int getItemCount()
+    {
+        //TODO We will do this together
+        return 0;
+    }
 }

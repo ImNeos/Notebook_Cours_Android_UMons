@@ -30,6 +30,21 @@ public final class DB_Notes {
         return instance;
     }
 
+    public boolean checkAlreadyExist(String name)
+    {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        String Query = "Select * from " + FeedEntry.TABLE_NAME + " where " + FeedEntry.COLUMN_NAME_NAME + " =?";
+        Cursor cursor = db.rawQuery(Query, new String[]{name});
+        if (cursor.getCount() > 0)
+        {
+            cursor.close();
+            return true;
+        }
+        else
+            cursor.close();
+        return false;
+    }
+
 
     public void addElementTodB(String name)
     {
@@ -50,10 +65,16 @@ public final class DB_Notes {
 
         while (cursor.moveToNext()) {
 
-            Log.i("fill_ID", cursor.getString(cursor.getColumnIndexOrThrow(FeedEntry._ID)));
+            Log.i("fill_ID", cursor.getString(cursor.getColumnIndexOrThrow(FeedEntry.COLUMN_NAME_NAME)));
             Notes_list.add(cursor.getString(cursor.getColumnIndexOrThrow(FeedEntry.COLUMN_NAME_NAME)));
         }
         cursor.close();
+    }
+
+    public void dropDB(){
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        db.execSQL(SQL_DELETE_ENTRIES);
+        db.execSQL(SQL_CREATE_ENTRIES);
     }
 
 
@@ -69,8 +90,7 @@ public final class DB_Notes {
 
     private static final String SQL_CREATE_ENTRIES =
             "CREATE TABLE " + FeedEntry.TABLE_NAME + " (" +
-                    FeedEntry._ID + " INTEGER PRIMARY KEY," +
-                    FeedEntry.COLUMN_NAME_NAME + " TEXT," +
+                    FeedEntry.COLUMN_NAME_NAME + " TEXT PRIMARY KEY," +
                     FeedEntry.COLUMN_NAME_DATE + " TEXT," +
                     FeedEntry.COLUMN_NAME_TYPE + " TEXT)";
 
