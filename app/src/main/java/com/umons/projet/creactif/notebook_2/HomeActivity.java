@@ -55,9 +55,6 @@ public class HomeActivity extends AppCompatActivity {
                 OpenDialog();
             }
         });
-
-
-
     }
     private void OpenDialog()
     {
