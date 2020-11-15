@@ -8,6 +8,8 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.provider.BaseColumns;
 import android.util.Log;
 
+import com.umons.projet.creactif.model.NoteListObject;
+
 import java.util.List;
 
 public final class DB_Notes {
@@ -46,27 +48,28 @@ public final class DB_Notes {
     }
 
 
-    public void addElementTodB(String name)
+    public void addElementTodB(String text, String date, int type)
     {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put(FeedEntry.COLUMN_NAME_NAME, name);
-        values.put(FeedEntry.COLUMN_NAME_DATE, System.currentTimeMillis());
-        values.put(FeedEntry.COLUMN_NAME_TYPE, 0);
+        values.put(FeedEntry.COLUMN_NAME_NAME, text);
+        values.put(FeedEntry.COLUMN_NAME_DATE, date);
+        values.put(FeedEntry.COLUMN_NAME_TYPE, type);
 
         long id = db.insert(FeedEntry.TABLE_NAME, null, values);
         Log.i("Add_ID", Long.toString(id));
     }
-    public void fillInlist(List<String> Notes_list)
+    public void fillInlist(List<NoteListObject> Notes_list)
     {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         Notes_list.clear();
         Cursor cursor = db.rawQuery("select * from " + FeedEntry.TABLE_NAME, null);
 
         while (cursor.moveToNext()) {
-
+            NoteListObject noteListObject = new NoteListObject(cursor.getString(cursor.getColumnIndexOrThrow(FeedEntry.COLUMN_NAME_NAME)),
+                    cursor.getString(cursor.getColumnIndexOrThrow(FeedEntry.COLUMN_NAME_DATE)),cursor.getInt(cursor.getColumnIndexOrThrow(FeedEntry.COLUMN_NAME_TYPE)));
             Log.i("fill_ID", cursor.getString(cursor.getColumnIndexOrThrow(FeedEntry.COLUMN_NAME_NAME)));
-            Notes_list.add(cursor.getString(cursor.getColumnIndexOrThrow(FeedEntry.COLUMN_NAME_NAME)));
+            Notes_list.add(noteListObject);
         }
         cursor.close();
     }

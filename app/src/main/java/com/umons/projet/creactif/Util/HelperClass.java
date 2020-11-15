@@ -4,6 +4,8 @@ import android.util.Log;
 
 import com.umons.projet.creactif.notebook_2.R;
 
+import java.text.DateFormat;
+
 
 public class HelperClass {
 
@@ -32,5 +34,9 @@ public class HelperClass {
             default:
                 return R.color.design_default_color_background;
         }
+    }
+    public static String convertMillisIntoDate(Long millis)
+    {
+        return DateFormat.getDateInstance(DateFormat.SHORT).format(millis);
     }
 }

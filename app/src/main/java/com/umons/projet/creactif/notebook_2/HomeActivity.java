@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.solver.widgets.Helper;
 import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -17,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -35,7 +37,6 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class HomeActivity extends AppCompatActivity {
 
-    List<String> list_of_items = new ArrayList<>();
     FloatingActionButton fab_add;
     NoteListAdapter noteListAdapter;
     RecyclerView recyclerView;
@@ -58,16 +59,6 @@ public class HomeActivity extends AppCompatActivity {
 
 
     }
-
-    private void SendUserToNoteActivity(int i)
-    {
-       // Toast.makeText(this, Integer.toString(i), Toast.LENGTH_SHORT).show();
-        Intent intent = new Intent(HomeActivity.this, WriteSimpleNoteActivity.class);
-        intent.putExtra("Titre", list_of_items.get(i));
-        startActivity(intent);
-    }
-
-
     private void OpenDialog()
     {
         new LovelyTextInputDialog(this)
@@ -86,8 +77,11 @@ public class HomeActivity extends AppCompatActivity {
                     public void onTextInputConfirmed(String text) {
                         if (!DB_Notes.getInstance(HomeActivity.this).checkAlreadyExist(text))
                         {
-                            //TODO 7 Rewrite this function the right way : FillInList(); addItemToDB(text);
-
+                            int type = 0;
+                            String date = Long.toString(System.currentTimeMillis());
+                            NoteListObject noteListObject = new NoteListObject(text, date, type);
+                            listObjects.add(noteListObject);
+                            addItemToDB(text, date,type);
                             noteListAdapter.notifyDataSetChanged();
 
                             DiffuserMessage(text);
@@ -100,34 +94,32 @@ public class HomeActivity extends AppCompatActivity {
                 .show();
     }
 
-    private void addItemToDB(String text)
+    private void addItemToDB(String text, String date, int type)
     {
-        DB_Notes.getInstance(this).addElementTodB(text);
+        DB_Notes.getInstance(this).addElementTodB(text,date,type);
     }
 
     private void InitializeFields()
     {
         fab_add = (FloatingActionButton) findViewById(R.id.fab_add);
 
-        //TODO 6 Rewrite this function the right way : FillInList();
-
-        for (int i =0; i<15; i++)
-        {
-            listObjects.add(new NoteListObject("Note"+i, i + "/11/2020", 0));
-        }
-
+        FillInList();
 
         recyclerView = (RecyclerView) findViewById(R.id.recycle_view);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.HORIZONTAL));
+        recyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
         recyclerView.setLayoutManager(layoutManager);
+
+
+
         noteListAdapter = new NoteListAdapter(this, listObjects);
         recyclerView.setAdapter(noteListAdapter);
     }
 
     private void FillInList()
     {
-        DB_Notes.getInstance(this).fillInlist(list_of_items);
+        DB_Notes.getInstance(this).fillInlist(listObjects);
     }
 
     private void DiffuserMessage(String message)
@@ -170,7 +162,7 @@ class NoteListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         if (!TextUtils.isEmpty(date))
         {
 
-            ((ItemMessageSentHolder) holder).lbl_date.setText(date);
+            ((ItemMessageSentHolder) holder).lbl_date.setText(HelperClass.convertMillisIntoDate(Long.parseLong(date)));
         }
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
