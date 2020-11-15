@@ -48,13 +48,15 @@ public final class DB_Notes {
     }
 
 
-    public void addElementTodB(String text, String date, int type)
+    public void addElementTodB(String text, String date, int type, String color)
     {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(FeedEntry.COLUMN_NAME_NAME, text);
         values.put(FeedEntry.COLUMN_NAME_DATE, date);
         values.put(FeedEntry.COLUMN_NAME_TYPE, type);
+        values.put(FeedEntry.COLUMN_NAME_COLOR, color);
+
 
         long id = db.insert(FeedEntry.TABLE_NAME, null, values);
         Log.i("Add_ID", Long.toString(id));
@@ -67,7 +69,9 @@ public final class DB_Notes {
 
         while (cursor.moveToNext()) {
             NoteListObject noteListObject = new NoteListObject(cursor.getString(cursor.getColumnIndexOrThrow(FeedEntry.COLUMN_NAME_NAME)),
-                    cursor.getString(cursor.getColumnIndexOrThrow(FeedEntry.COLUMN_NAME_DATE)),cursor.getInt(cursor.getColumnIndexOrThrow(FeedEntry.COLUMN_NAME_TYPE)));
+                    cursor.getString(cursor.getColumnIndexOrThrow(FeedEntry.COLUMN_NAME_DATE)),
+                    cursor.getInt(cursor.getColumnIndexOrThrow(FeedEntry.COLUMN_NAME_TYPE)),
+                    cursor.getString(cursor.getColumnIndexOrThrow(FeedEntry.COLUMN_NAME_COLOR)));
             Log.i("fill_ID", cursor.getString(cursor.getColumnIndexOrThrow(FeedEntry.COLUMN_NAME_NAME)));
             Notes_list.add(noteListObject);
         }
@@ -88,6 +92,7 @@ public final class DB_Notes {
         public static final String COLUMN_NAME_NAME = "name";
         public static final String COLUMN_NAME_DATE = "date";
         public static final String COLUMN_NAME_TYPE = "type";
+        public static final String COLUMN_NAME_COLOR = "color";
 
     }
 
@@ -95,14 +100,15 @@ public final class DB_Notes {
             "CREATE TABLE " + FeedEntry.TABLE_NAME + " (" +
                     FeedEntry.COLUMN_NAME_NAME + " TEXT PRIMARY KEY," +
                     FeedEntry.COLUMN_NAME_DATE + " TEXT," +
-                    FeedEntry.COLUMN_NAME_TYPE + " TEXT)";
+                    FeedEntry.COLUMN_NAME_TYPE + " TEXT," +
+                    FeedEntry.COLUMN_NAME_COLOR + " TEXT)";
 
     private static final String SQL_DELETE_ENTRIES =
             "DROP TABLE IF EXISTS " + FeedEntry.TABLE_NAME;
 
     public static class DB_NotesHelper extends SQLiteOpenHelper {
         // If you change the database schema, you must increment the database version.
-        public static final int DATABASE_VERSION = 1;
+        public static final int DATABASE_VERSION = 2;
         public static final String DATABASE_NAME = "notes.db";
 
         public DB_NotesHelper(Context context) {

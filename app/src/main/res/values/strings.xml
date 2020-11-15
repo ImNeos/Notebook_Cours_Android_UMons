@@ -1,3 +1,18 @@
 <resources>
     <string name="app_name">Mon bloc note</string>
+
+
+        <string-array name="TypeOfNote">
+            <item>0</item>
+            <item>1</item>
+            <item>2</item>
+        </string-array>
+
+
+    <string-array name="ColorOfNote">
+        <item>Bleu</item>
+        <item>Rouge</item>
+        <item>Vert</item>
+    </string-array>
+
 </resources>

@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -51,49 +52,13 @@ public class HomeActivity extends AppCompatActivity {
         fab_add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //DiffuserMessage("Working !");
                 OpenDialog();
             }
         });
     }
     private void OpenDialog()
     {
-        new LovelyTextInputDialog(this)
-                .setTopColorRes(R.color.colorPrimary)
-                .setTitle("Ajouter un élément à la liste")
-                .setMessage("Entrer votre élément")
-                .setIcon(R.drawable.ic_input_add)
-                .setInputFilter("Erreur", new LovelyTextInputDialog.TextFilter() {
-                    @Override
-                    public boolean check(String text) {
-                        return text.length() > 3 && text.length() < 30;
-                    }
-                })
-                .setConfirmButton(android.R.string.ok, new LovelyTextInputDialog.OnTextInputConfirmListener() {
-                    @Override
-                    public void onTextInputConfirmed(String text) {
-                        if (!DB_Notes.getInstance(HomeActivity.this).checkAlreadyExist(text))
-                        {
-                            int type = 0;
-                            String date = Long.toString(System.currentTimeMillis());
-                            NoteListObject noteListObject = new NoteListObject(text, date, type);
-                            listObjects.add(noteListObject);
-                            addItemToDB(text, date,type);
-                            noteListAdapter.notifyDataSetChanged();
-
-                            DiffuserMessage(text);
-                        }else
-                            {
-                            Toast.makeText(HomeActivity.this, "Ce nom existe déjà ! ", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                })
-                .show();
-    }
-
-    private void addItemToDB(String text, String date, int type)
-    {
-        DB_Notes.getInstance(this).addElementTodB(text,date,type);
+        startActivity(new Intent(HomeActivity.this, CreateNewActivity.class));
     }
 
     private void InitializeFields()
@@ -114,17 +79,17 @@ public class HomeActivity extends AppCompatActivity {
         recyclerView.setAdapter(noteListAdapter);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        FillInList();
+        noteListAdapter.notifyDataSetChanged();
+    }
+
     private void FillInList()
     {
         DB_Notes.getInstance(this).fillInlist(listObjects);
     }
-
-    private void DiffuserMessage(String message)
-    {
-        Toast.makeText(HomeActivity.this, message, Toast.LENGTH_SHORT).show();
-    }
-
-
 }
 class NoteListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 {
@@ -152,9 +117,7 @@ class NoteListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         if (!TextUtils.isEmpty(name))
         {
             ((ItemMessageSentHolder)holder).lbl_name.setText(name);
-            int color = HelperClass.ChooseColor(name);
-            ((ItemMessageSentHolder)holder).im_color.setImageResource(color);
-            HelperClass.ChooseColor(name);
+            ((ItemMessageSentHolder)holder).im_color.setImageResource(context.getResources().getIdentifier(listObjects.get(position).getColor(), "color", context.getPackageName()));
         }
         if (!TextUtils.isEmpty(date))
         {

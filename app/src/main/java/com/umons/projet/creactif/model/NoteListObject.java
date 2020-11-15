@@ -5,11 +5,21 @@ public class NoteListObject
     String name;
     String date;
     int type;
+    String color;
 
-    public NoteListObject(String name, String date, int type) {
+    public NoteListObject(String name, String date, int type, String color) {
         this.name = name;
         this.date = date;
         this.type = type;
+        this.color = color;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
     }
 
     public String getName() {
