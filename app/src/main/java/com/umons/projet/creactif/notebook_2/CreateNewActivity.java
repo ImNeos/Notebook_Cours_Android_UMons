@@ -2,6 +2,7 @@ package com.umons.projet.creactif.notebook_2;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -11,6 +12,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.azeesoft.lib.colorpicker.ColorPickerDialog;
 import com.umons.projet.creactif.database_int.DB_Notes;
 import com.yarolegovich.lovelydialog.LovelyChoiceDialog;
 
@@ -22,6 +24,7 @@ public class CreateNewActivity extends AppCompatActivity {
 
     EditText et_name;
     TextView txt_color, txt_type;
+    int color_choose;
     String color;
     String type;
     Button btn;
@@ -35,13 +38,14 @@ public class CreateNewActivity extends AppCompatActivity {
         txt_color.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                try {
+            /*    try {
                     OpenColorDialog_2();
                 } catch (ClassNotFoundException e) {
                     e.printStackTrace();
                 } catch (IllegalAccessException e) {
                     e.printStackTrace();
-                }
+                }*/
+                OpenColorDialog_3();
             }
         });
         txt_type.setOnClickListener(new View.OnClickListener() {
@@ -79,7 +83,7 @@ public class CreateNewActivity extends AppCompatActivity {
     }
     private void addItemToDB()
     {
-        DB_Notes.getInstance(this).addElementTodB(et_name.getText().toString(),Long.toString(System.currentTimeMillis()),Integer.parseInt(type), color);
+        DB_Notes.getInstance(this).addElementTodB(et_name.getText().toString(),Long.toString(System.currentTimeMillis()),Integer.parseInt(type), color_choose);
     }
 
     private void test() throws ClassNotFoundException, IllegalAccessException {
@@ -97,6 +101,22 @@ public class CreateNewActivity extends AppCompatActivity {
             Log.i("test", colorName + " => " + colorId + " => " + color);
             colorIDList.add(color);
         }
+
+    }
+    private void OpenColorDialog_3()
+    {
+        ColorPickerDialog colorPickerDialog= ColorPickerDialog.createColorPickerDialog(this,ColorPickerDialog.DARK_THEME);
+        colorPickerDialog.setOnColorPickedListener(new ColorPickerDialog.OnColorPickedListener() {
+            @Override
+            public void onColorPicked(int color, String hexVal) {
+                //Your code here
+                color_choose = color;
+                txt_color.setBackgroundColor(color_choose);
+                Log.i("COLOR", color + "test"+ hexVal);
+            }
+        });
+        colorPickerDialog.setHexaDecimalTextColor(Color.parseColor("#ffffff")); //There are many functions like this
+        colorPickerDialog.show();
 
     }
     private void OpenColorDialog_2() throws ClassNotFoundException, IllegalAccessException

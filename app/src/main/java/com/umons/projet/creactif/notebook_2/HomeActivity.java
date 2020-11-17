@@ -118,7 +118,9 @@ class NoteListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         if (!TextUtils.isEmpty(name))
         {
             ((ItemMessageSentHolder)holder).lbl_name.setText(name);
-            ((ItemMessageSentHolder)holder).im_color.setImageResource(context.getResources().getIdentifier(listObjects.get(position).getColor(), "color", context.getPackageName()));
+            ((ItemMessageSentHolder)holder).im_color.setColorFilter(listObjects.get(position).getColor());
+
+            //  ((ItemMessageSentHolder)holder).im_color.setImageResource(context.getResources().getIdentifier(listObjects.get(position).getColor(), "color", context.getPackageName()));
         }
         if (!TextUtils.isEmpty(date))
         {

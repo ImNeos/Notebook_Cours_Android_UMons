@@ -48,7 +48,7 @@ public final class DB_Notes {
     }
 
 
-    public void addElementTodB(String text, String date, int type, String color)
+    public void addElementTodB(String text, String date, int type, int color)
     {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -71,7 +71,7 @@ public final class DB_Notes {
             NoteListObject noteListObject = new NoteListObject(cursor.getString(cursor.getColumnIndexOrThrow(FeedEntry.COLUMN_NAME_NAME)),
                     cursor.getString(cursor.getColumnIndexOrThrow(FeedEntry.COLUMN_NAME_DATE)),
                     cursor.getInt(cursor.getColumnIndexOrThrow(FeedEntry.COLUMN_NAME_TYPE)),
-                    cursor.getString(cursor.getColumnIndexOrThrow(FeedEntry.COLUMN_NAME_COLOR)));
+                    cursor.getInt(cursor.getColumnIndexOrThrow(FeedEntry.COLUMN_NAME_COLOR)));
             Log.i("fill_ID", cursor.getString(cursor.getColumnIndexOrThrow(FeedEntry.COLUMN_NAME_NAME)));
             Notes_list.add(noteListObject);
         }
