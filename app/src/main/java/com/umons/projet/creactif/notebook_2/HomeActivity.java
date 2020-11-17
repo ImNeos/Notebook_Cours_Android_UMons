@@ -82,6 +82,7 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+
         FillInList();
         noteListAdapter.notifyDataSetChanged();
     }

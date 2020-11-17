@@ -62,7 +62,7 @@ public final class DB_Notes {
         Log.i("Add_ID", Long.toString(id));
     }
     public void fillInlist(List<NoteListObject> Notes_list)
-    {
+     {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         Notes_list.clear();
         Cursor cursor = db.rawQuery("select * from " + FeedEntry.TABLE_NAME, null);
