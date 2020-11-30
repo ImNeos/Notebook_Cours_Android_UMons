@@ -111,8 +111,26 @@ public class CreateNewActivity extends AppCompatActivity {
             public void onColorPicked(int color, String hexVal) {
                 //Your code here
                 color_choose = color;
-                txt_color.setBackgroundColor(color_choose);
-                Log.i("COLOR", color + "test"+ hexVal);
+                txt_color.setHintTextColor(color_choose);
+             /*   Log.i("COLOR", color + "test"+ hexVal);
+                int hex = Integer.parseInt(hexVal);
+                int r = (hex & 0xFF0000) >> 16;
+                int g = (hex & 0xFF00) >> 8;
+                int b = (hex & 0xFF);
+
+                int r_c = 255-r;
+                int g_c = 255-g;
+                int b_c = 255-b;
+                Color myColour = new Color();
+
+                myColour.red(r_c);
+                myColour.green(g_c);
+                myColour.blue(b_c);
+
+
+
+                txt_color.setColor(myColour);*/
+
             }
         });
         colorPickerDialog.setHexaDecimalTextColor(Color.parseColor("#ffffff")); //There are many functions like this

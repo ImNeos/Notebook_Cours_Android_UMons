@@ -28,6 +28,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.umons.projet.creactif.Util.HelperClass;
 import com.umons.projet.creactif.database_int.DB_Notes;
 import com.umons.projet.creactif.model.NoteListObject;
+import com.umons.projet.creactif.note.CheckBoxNotesActivity;
 import com.umons.projet.creactif.note.WriteSimpleNoteActivity;
 import com.yarolegovich.lovelydialog.LovelyTextInputDialog;
 
@@ -74,7 +75,6 @@ public class HomeActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(layoutManager);
 
 
-
         noteListAdapter = new NoteListAdapter(this, listObjects);
         recyclerView.setAdapter(noteListAdapter);
     }
@@ -111,9 +111,9 @@ class NoteListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     }
 
     @Override
-    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position)
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, final int position)
     {
-        final String name= listObjects.get(position).getName();
+        final String name= listObjects.get(position).getName() + " ("+ listObjects.get(position).getType() + ")";
         final String date = listObjects.get(position).getDate();
         if (!TextUtils.isEmpty(name))
         {
@@ -131,10 +131,31 @@ class NoteListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.i("ClickHolder", name);
-                Intent intent = new Intent(context, WriteSimpleNoteActivity.class);
-                intent.putExtra("Titre", name);
-                context.startActivity(intent);
+
+
+                int type = listObjects.get(position).getType();
+                switch (type)
+                {
+                    case 0:
+                    {
+                        Log.i("ClickHolder", name);
+                        Intent intent = new Intent(context, WriteSimpleNoteActivity.class);
+                        intent.putExtra("Titre", name);
+                        context.startActivity(intent);
+                        break;
+                    }
+                    case 1: {
+                        Log.i("ClickHolder", name);
+                        Intent intent1 = new Intent(context, CheckBoxNotesActivity.class);
+                        intent1.putExtra("Titre", name);
+                        context.startActivity(intent1);
+                        break;
+                    }
+                    default:{
+                        Toast.makeText(context, ""+type, Toast.LENGTH_SHORT).show();
+                        break;
+                    }
+                }
             }
         });
 

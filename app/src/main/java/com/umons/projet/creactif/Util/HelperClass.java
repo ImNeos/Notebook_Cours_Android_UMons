@@ -1,5 +1,6 @@
 package com.umons.projet.creactif.Util;
 
+import android.graphics.Color;
 import android.util.Log;
 
 import com.umons.projet.creactif.notebook_2.R;
@@ -39,4 +40,5 @@ public class HelperClass {
     {
         return DateFormat.getDateInstance(DateFormat.SHORT).format(millis);
     }
+
 }
