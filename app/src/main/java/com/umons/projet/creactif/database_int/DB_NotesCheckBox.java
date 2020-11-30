@@ -8,6 +8,11 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.provider.BaseColumns;
 import android.util.Log;
 
+import com.umons.projet.creactif.model.CheckBoxNotesModel;
+import com.umons.projet.creactif.model.NoteListObject;
+
+import java.util.List;
+
 public class DB_NotesCheckBox {
     private DB_NotesCheckBox() {
     }
@@ -24,17 +29,22 @@ public class DB_NotesCheckBox {
         return instance;
     }
 
-    public void addElementTodB(String from_name, String itemname, Boolean isCheck, String date) {
+    public void addElementTodB(String from_name, String itemname, Boolean isCheck, long date) {
         SQLiteDatabase db = db_helper.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put(FeedEntry.COLUMN_NAME_ID, System.currentTimeMillis());
+        values.put(FeedEntry.COLUMN_NAME_ID, date);
         values.put(FeedEntry.COLUMN_NAME_FROM, from_name);
         values.put(FeedEntry.COLUMN_NAME_ITEM, itemname);
         values.put(FeedEntry.COLUMN_NAME_DATE, date);
         values.put(FeedEntry.COLUMN_IS_CHECK, isCheck);
 
 
-        long x = checkAlreadyExistFromNameReturnID(from_name, itemname);
+        values.put(FeedEntry.COLUMN_NAME_ID, System.currentTimeMillis());
+        long id = db.insert(FeedEntry.TABLE_NAME, null, values);
+        Log.i("Add_ID", Long.toString(id));
+
+
+      /*  long x = checkAlreadyExistFromNameReturnID(from_name, itemname);
         if (x != -1)
         {
             values.put(FeedEntry.COLUMN_NAME_ID, x);
@@ -44,8 +54,28 @@ public class DB_NotesCheckBox {
                 values.put(FeedEntry.COLUMN_NAME_ID, System.currentTimeMillis());
                 long id = db.insert(FeedEntry.TABLE_NAME, null, values);
                 Log.i("Add_ID", Long.toString(id));
-        }
+        }*/
     }
+
+    public void fillInlist(List<CheckBoxNotesModel> Notes_list, String fromname)
+    {
+        SQLiteDatabase db = db_helper.getReadableDatabase();
+        Notes_list.clear();
+        Cursor cursor = db.rawQuery("select * from " + FeedEntry.TABLE_NAME + " where " + FeedEntry.COLUMN_NAME_FROM + "=?", new String[]{fromname});
+
+        while (cursor.moveToNext()) {
+            CheckBoxNotesModel checkBoxNotesModel = new CheckBoxNotesModel(fromname,
+                    cursor.getString(cursor.getColumnIndexOrThrow(FeedEntry.COLUMN_NAME_ITEM)),
+                    cursor.getInt(cursor.getColumnIndexOrThrow(FeedEntry.COLUMN_IS_CHECK))>0,
+                    cursor.getLong(cursor.getColumnIndexOrThrow(FeedEntry.COLUMN_NAME_DATE)));
+
+            Log.i("fill_ID", cursor.getString(cursor.getColumnIndexOrThrow(FeedEntry.COLUMN_NAME_ITEM)));
+            Notes_list.add(checkBoxNotesModel);
+        }
+        cursor.close();
+    }
+
+
 
    /* public String getNote(String name) {
         SQLiteDatabase db = db_helper.getWritableDatabase();
@@ -110,7 +140,7 @@ public class DB_NotesCheckBox {
 
     private static final String SQL_CREATE_ENTRIES =
             "CREATE TABLE " + FeedEntry.TABLE_NAME + " (" +
-                    FeedEntry.COLUMN_NAME_ID + " INTEGER PRIMARY KEY," +
+                    FeedEntry.COLUMN_NAME_ID + " TEXT PRIMARY KEY," +
                     FeedEntry.COLUMN_NAME_ITEM + " TEXT," +
                     FeedEntry.COLUMN_NAME_FROM + " TEXT," +
                     FeedEntry.COLUMN_NAME_DATE + " TEXT," +
@@ -121,7 +151,7 @@ public class DB_NotesCheckBox {
 
     public static class DB_NotesCheckHelper extends SQLiteOpenHelper {
         // If you change the database schema, you must increment the database version.
-        public static final int DATABASE_VERSION = 1;
+        public static final int DATABASE_VERSION = 2;
         public static final String DATABASE_NAME = "notes_w_check.db";
 
         public DB_NotesCheckHelper(Context context) {

@@ -2,25 +2,18 @@ package com.umons.projet.creactif.notebook_2;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.solver.widgets.Helper;
 import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,7 +23,6 @@ import com.umons.projet.creactif.database_int.DB_Notes;
 import com.umons.projet.creactif.model.NoteListObject;
 import com.umons.projet.creactif.note.CheckBoxNotesActivity;
 import com.umons.projet.creactif.note.WriteSimpleNoteActivity;
-import com.yarolegovich.lovelydialog.LovelyTextInputDialog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +32,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class HomeActivity extends AppCompatActivity {
 
     FloatingActionButton fab_add;
-    NoteListAdapter noteListAdapter;
+    notelistadapter noteListAdapter;
     RecyclerView recyclerView;
 
     List<NoteListObject> listObjects = new ArrayList<>();
@@ -75,7 +67,7 @@ public class HomeActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(layoutManager);
 
 
-        noteListAdapter = new NoteListAdapter(this, listObjects);
+        noteListAdapter = new notelistadapter(this, listObjects);
         recyclerView.setAdapter(noteListAdapter);
     }
 
@@ -92,12 +84,12 @@ public class HomeActivity extends AppCompatActivity {
         DB_Notes.getInstance(this).fillInlist(listObjects);
     }
 }
-class NoteListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
+class notelistadapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 {
 
     Context context;
     List<NoteListObject> listObjects = new ArrayList<>();
-    public NoteListAdapter (Context context, List<NoteListObject> listObjects)
+    public notelistadapter(Context context, List<NoteListObject> listObjects)
     {
         this.listObjects = listObjects;
         this.context = context;

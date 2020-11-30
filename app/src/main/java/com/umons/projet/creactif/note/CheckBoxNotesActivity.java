@@ -21,6 +21,7 @@ import android.widget.TextView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.umons.projet.creactif.Util.HelperClass;
+import com.umons.projet.creactif.database_int.DB_NotesCheckBox;
 import com.umons.projet.creactif.model.CheckBoxNotesModel;
 import com.umons.projet.creactif.model.NoteListObject;
 import com.umons.projet.creactif.notebook_2.R;
@@ -37,6 +38,7 @@ public class CheckBoxNotesActivity extends AppCompatActivity {
 
     Button btn_add;
     EditText et_item;
+    String note_name="";
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -56,17 +58,24 @@ public class CheckBoxNotesActivity extends AppCompatActivity {
     private void AddToList()
     {
         String item = et_item.getText().toString();
+        DB_NotesCheckBox.getInstance(this).addElementTodB(note_name,item,false,System.currentTimeMillis());
         listObjects.add(new CheckBoxNotesModel(item, item, false,System.currentTimeMillis()));
         noteListAdapter.notifyDataSetChanged();
         et_item.setText("");
+        recyclerView.smoothScrollToPosition(listObjects.size());
     }
 
 
 
     private void Init() {
 
+        try {
+            note_name = getIntent().getExtras().getString("Titre");
+        }
+        catch (Exception e){}
 
 
+        DB_NotesCheckBox.getInstance(this).fillInlist(listObjects, note_name);
         btn_add = (Button) findViewById(R.id.btn_add);
         et_item = (EditText) findViewById(R.id.et_item);
 
