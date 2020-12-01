@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -58,8 +59,9 @@ public class CheckBoxNotesActivity extends AppCompatActivity {
     private void AddToList()
     {
         String item = et_item.getText().toString();
-        DB_NotesCheckBox.getInstance(this).addElementTodB(note_name,item,false,System.currentTimeMillis());
-        listObjects.add(new CheckBoxNotesModel(item, item, false,System.currentTimeMillis()));
+        long id= System.currentTimeMillis();
+        DB_NotesCheckBox.getInstance(this).addElementTodB(note_name,item,false,id, id);
+        listObjects.add(new CheckBoxNotesModel(item, item, false,id,id));
         noteListAdapter.notifyDataSetChanged();
         et_item.setText("");
         recyclerView.smoothScrollToPosition(listObjects.size());
@@ -120,8 +122,21 @@ class ListItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         final String name= item_list.get(position).getItemname();
         final boolean ischeck = item_list.get(position).isCheckeck();
 
+
         ((ItemsViewHolder)holder).lbl_article_name.setText(name);
         ((ItemsViewHolder)holder).checkBox.setChecked(ischeck);
+
+
+        ((ItemsViewHolder)holder).checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b)
+            {
+                item_list.get(position).setCheckeck(b);
+                DB_NotesCheckBox.getInstance(context).UpdateCheckBox(item_list.get(position));
+                Log.i("Checked", "true");
+
+            }
+        });
     }
 
     public void deleteItem(int position)

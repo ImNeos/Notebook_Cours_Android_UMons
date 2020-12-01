@@ -6,12 +6,22 @@ public class CheckBoxNotesModel
     String itemname;
     boolean isCheckeck;
     long last_date;
+    long id;
 
-    public CheckBoxNotesModel(String from_name, String itemname, boolean isCheckeck, long last_date) {
+    public CheckBoxNotesModel(String from_name, String itemname, boolean isCheckeck, long last_date, long id) {
         this.from_name = from_name;
         this.itemname = itemname;
         this.isCheckeck = isCheckeck;
         this.last_date = last_date;
+        this.id=id;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public String getFrom_name() {
