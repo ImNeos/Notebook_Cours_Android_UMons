@@ -32,7 +32,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class HomeActivity extends AppCompatActivity {
 
     FloatingActionButton fab_add;
-    noteLst noteListAdapter;
+    Notefucking noteListAdapter;
     RecyclerView recyclerView;
 
     List<NoteListObject> listObjects = new ArrayList<>();
@@ -67,7 +67,7 @@ public class HomeActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(layoutManager);
 
 
-        noteListAdapter = new noteLst(this, listObjects);
+        noteListAdapter = new Notefucking(this, listObjects);
         recyclerView.setAdapter(noteListAdapter);
     }
 
@@ -84,12 +84,12 @@ public class HomeActivity extends AppCompatActivity {
         DB_Notes.getInstance(this).fillInlist(listObjects);
     }
 }
-class noteLst extends RecyclerView.Adapter<RecyclerView.ViewHolder>
+class Notefucking extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 {
 
     Context context;
     List<NoteListObject> listObjects = new ArrayList<>();
-    public noteLst(Context context, List<NoteListObject> listObjects)
+    public Notefucking(Context context, List<NoteListObject> listObjects)
     {
         this.listObjects = listObjects;
         this.context = context;

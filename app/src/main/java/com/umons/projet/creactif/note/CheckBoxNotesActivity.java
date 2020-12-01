@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -122,19 +123,31 @@ class ListItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         final String name= item_list.get(position).getItemname();
         final boolean ischeck = item_list.get(position).isCheckeck();
 
+        final int pos = position;
 
         ((ItemsViewHolder)holder).lbl_article_name.setText(name);
         ((ItemsViewHolder)holder).checkBox.setChecked(ischeck);
 
 
-        ((ItemsViewHolder)holder).checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b)
-            {
-                item_list.get(position).setCheckeck(b);
-                DB_NotesCheckBox.getInstance(context).UpdateCheckBox(item_list.get(position));
-                Log.i("Checked", "true");
+            public void onClick(View view) {
 
+
+                if (item_list.get(pos).isCheckeck())
+                {
+                    item_list.get(pos).setCheckeck(false);
+                    Log.i("Checked", ""+item_list.get(pos).isCheckeck());
+                    DB_NotesCheckBox.getInstance(context).UpdateCheckBox(item_list.get(pos));
+                    notifyDataSetChanged();
+                }
+                else
+                {
+                    item_list.get(pos).setCheckeck(true);
+                    Log.i("Checked", ""+item_list.get(pos).isCheckeck());
+                    DB_NotesCheckBox.getInstance(context).UpdateCheckBox(item_list.get(pos));
+                    notifyDataSetChanged();
+                }
             }
         });
     }
